@@ -123,6 +123,7 @@ def main():
         
         #init player
         player.PlayerRect()
+        
         #mouse position
         mousepos = pygame.mouse.get_pos()
         
