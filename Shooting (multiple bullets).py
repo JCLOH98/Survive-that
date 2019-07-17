@@ -10,7 +10,7 @@ setfps = 30
 
 pygame.init()
 Display = pygame.display.set_mode((screenwidth,screenheight))
-pygame.display.set_caption("Shooting motion")
+pygame.display.set_caption("Shoot some bullets")
 
 BLACK = (0,0,0)
 GREY = (180,180,180)
@@ -48,10 +48,17 @@ theplayercenter = (screenwidth/2, screenheight/2)
 theangle = 0
 xspeed = 0
 yspeed = 0
-thespeed = 30
+thespeed = 20
 
 #shoot
 shoot = False
+
+#bullet amount
+bulletnum = 3
+anglelist = []
+mouseposlist = []
+xspeedlist = []
+yspeedlist = []
 
 while True:
     Display.fill(GREY)
