@@ -54,7 +54,10 @@ thespeed = 20
 shoot = False
 
 #bullet amount
-bulletnum = 3
+currentbulletnum = 0 #0 means 1 bullet, 1 means 2 bullet
+bulletnum = 4
+bulletlist = []
+bulletrectlist = []
 anglelist = []
 mouseposlist = []
 xspeedlist = []
@@ -66,7 +69,6 @@ while True:
     #mouse position
     mousepos = pygame.mouse.get_pos()
 
-    #rect for rotation
     #angle
     if (abs(mousepos[0] - screenwidth/2) != 0):
         #1st quad
@@ -108,61 +110,73 @@ while True:
                     sys.exit()
 
             elif event.type == MOUSEBUTTONDOWN:
-                if pygame.mouse.get_pressed() == LEFT_CLICK and shoot == False:
+                if pygame.mouse.get_pressed() == LEFT_CLICK :#and shoot == False:
                     print("shoot bullet")
-                    themousepos = mousepos
-                    theplayercenter = screencenter
-                    theangle = angle
-                    
                     shoot = True
-                    #A,S,T,C
-                    #1st quad
-                    if (themousepos[0] > theplayercenter[0] and themousepos[1] < theplayercenter[1]):
-                        xspeed = thespeed * cos(theangle) #+ve speed
-                        yspeed = -thespeed * sin(theangle) #-ve speed
-                        print(1)
-                    #2nd quad
-                    if (themousepos[0] < theplayercenter[0] and themousepos[1] < theplayercenter[1]):
-                        xspeed = thespeed * cos(theangle) #-ve speed
-                        yspeed = -thespeed * sin(theangle) #-ve speed
-                        print(2)
-                    #3rd quad
-                    if (themousepos[0] < theplayercenter[0] and themousepos[1] > theplayercenter[1]):
-                        xspeed = thespeed * cos(theangle) #-ve speed
-                        yspeed = -thespeed * sin(theangle) #+ve speed
-                        print(3)
-                    #4th quad
-                    if (themousepos[0] > theplayercenter[0] and themousepos[1] > theplayercenter[1]):
-                        xspeed = thespeed * cos(theangle) #+ve speed
-                        yspeed = -thespeed * sin(theangle) #+ve speed
-                        print(4)
 
-                    #on x-axis
-                    if (themousepos[1] ==  theplayercenter[1]):
-                        if (themousepos[0] > theplayercenter[0]):
-                            xspeed = thespeed
-                            yspeed = 0
-                            #print("right side")
-                        elif (themousepos[0] < theplayercenter[0]):
-                            xspeed = -thespeed
-                            yspeed = 0
-                            #print("left side")
-                    #on y-axis
-                    if (themousepos[0] == theplayercenter[0]):
-                        if (themousepos[1] < theplayercenter[1]):
-                            yspeed = -thespeed
-                            xspeed = 0
-                            #print("up side")
-                        elif (themousepos[1] > theplayercenter[1]):
-                            yspeed = thespeed
-                            xspeed = 0
-                            #print("down side")
-                    
+                    if currentbulletnum < bulletnum:
+                        mouseposlist.append(mousepos)
+                        theplayercenter = screencenter
+                        anglelist.append(angle)
+                        #A,S,T,C
+                        #1st quad
+                        if (mouseposlist[currentbulletnum][0] > theplayercenter[0] and mouseposlist[currentbulletnum][1] < theplayercenter[1]):
+                            xspeedlist.append(thespeed * cos(anglelist[currentbulletnum])) #+ve speed
+                            yspeedlist.append(-thespeed * sin(anglelist[currentbulletnum])) #-ve speed
+                            #print(1)
+                        #2nd quad
+                        if (mouseposlist[currentbulletnum][0] < theplayercenter[0] and mouseposlist[currentbulletnum][1] < theplayercenter[1]):
+                            xspeedlist.append(thespeed * cos(anglelist[currentbulletnum])) #-ve speed
+                            yspeedlist.append(-thespeed * sin(anglelist[currentbulletnum])) #-ve speed
+                            #print(2)
+                        #3rd quad
+                        if (mouseposlist[currentbulletnum][0] < theplayercenter[0] and mouseposlist[currentbulletnum][1] > theplayercenter[1]):
+                            xspeedlist.append(thespeed * cos(anglelist[currentbulletnum])) #-ve speed
+                            yspeedlist.append(-thespeed * sin(anglelist[currentbulletnum])) #+ve speed
+                            #print(3)
+                        #4th quad
+                        if (mouseposlist[currentbulletnum][0] > theplayercenter[0] and mouseposlist[currentbulletnum][1] > theplayercenter[1]):
+                            xspeedlist.append(thespeed * cos(anglelist[currentbulletnum])) #+ve speed
+                            yspeedlist.append(-thespeed * sin(anglelist[currentbulletnum])) #+ve speed
+                            #print(4)
+
+                        #on x-axis
+                        if (mouseposlist[currentbulletnum][1] ==  theplayercenter[1]):
+                            if (mouseposlist[currentbulletnum][0] > theplayercenter[0]):
+                                xspeedlist.append(thespeed)
+                                yspeedlist.append(0)
+                                print("right side")
+                            elif (mouseposlist[currentbulletnum][0] < theplayercenter[0]):
+                                xspeedlist.append(-thespeed)
+                                yspeedlist.append(0)
+                                print("left side")
+                        #on y-axis
+                        if (mouseposlist[currentbulletnum][0] == theplayercenter[0]):
+                            if (mouseposlist[currentbulletnum][1] < theplayercenter[1]):
+                                yspeedlist.append(-thespeed)
+                                xspeedlist.append(0)
+                                #print("up side")
+                            elif (mouseposlist[currentbulletnum][1] > theplayercenter[1]):
+                                yspeedlist.append(thespeed)
+                                xspeedlist.append(0)
+                                #print("down side")                    
                     
                     #starting position bullet
-                    TheBullet = pygame.transform.rotate(BulletSurf,angle/math.pi*180)
-                    BulletRect = TheBullet.get_rect()
-                    BulletRect.center = screencenter
+                    if currentbulletnum < bulletnum:
+                        bulletlist.append(pygame.transform.rotate(BulletSurf,anglelist[currentbulletnum]/math.pi*180))
+                        bulletrectlist.append(bulletlist[currentbulletnum].get_rect())
+                        bulletrectlist[currentbulletnum].center = screencenter
+
+                    
+                        currentbulletnum += 1
+                        
+                    #print("BL: ",bulletlist)
+                    #print("BL rect: ", bulletrectlist)
+                    #print("Angle: ",anglelist)
+                    #print("Mouse Pos: ",mouseposlist)
+                    #print("X speed: ",xspeedlist)
+                    #print("Y speed: ",yspeedlist)
+                    #print("\n")
 
                     #print("Xspeed: ",xspeed)
                     #print("Yspeed: ",yspeed)
@@ -183,14 +197,32 @@ while True:
 
     #shoot the bullet
     if shoot == True:
-        Display.blit(TheBullet,BulletRect)
-        BulletRect.centerx += xspeed
-        BulletRect.centery += yspeed
-        #print("BulletRect.centerx: ",BulletRect.centerx)
-        #print("BulletRect.centery: ",BulletRect.centery)
-        if (BulletRect.centerx >= screenwidth or BulletRect.centerx < 0 or BulletRect.centery > screenheight or BulletRect.centery < 0):
-            shoot = False
+        for i in range(len(bulletlist)):
+            Display.blit(bulletlist[i],bulletrectlist[i])
+            bulletrectlist[i].centerx += xspeedlist[i]
+            bulletrectlist[i].centery += yspeedlist[i]
+            #print("BulletRect.centerx: ",bulletrectlist[i].centerx)
+            #print("BulletRect.centery: ",bulletrectlist[i].centery)
+
+        for i in range(len(bulletlist)):
+            if (bulletrectlist[i].centerx >= screenwidth or bulletrectlist[i].centerx < 0 or bulletrectlist[i].centery > screenheight or bulletrectlist[i].centery < 0):
+                #shoot = False
+                bulletlist.remove(bulletlist[i])
+                bulletrectlist.remove(bulletrectlist[i])
+                anglelist.remove(anglelist[i])
+                mouseposlist.remove(mouseposlist[i])
+                xspeedlist.remove(xspeedlist[i])
+                yspeedlist.remove(yspeedlist[i])
+                currentbulletnum -= 1
+                break
     
+    #print("BL: ",bulletlist)
+    #print("BL rect: ", bulletrectlist)
+    #print("Angle: ",anglelist)
+    #print("Mouse Pos: ",mouseposlist)
+    #print("X speed: ",xspeedlist)
+    #print("Y speed: ",yspeedlist)
+    #print("\n")
     
     pygame.display.update()
     pygame.time.Clock().tick(setfps);#fps

@@ -9,7 +9,7 @@ setfps = 30
 
 pygame.init()
 Display = pygame.display.set_mode((screenwidth,screenheight))
-pygame.display.set_caption("Shooting motion")
+pygame.display.set_caption("Throw Grenade")
 
 BLACK = (0,0,0)
 GREY = (180,180,180)
@@ -54,9 +54,6 @@ while True:
                 if event.key == K_BACKSPACE:
                     pygame.quit()
                     sys.exit()
-            elif event.type == MOUSEBUTTONDOWN:
-                if pygame.mouse.get_pressed() == RIGHT_CLICK:
-                    print("grenade")
 
     old_center = RectRect.center
 
