@@ -9,7 +9,7 @@ setfps = 30
 
 pygame.init()
 Display = pygame.display.set_mode((screenwidth,screenheight))
-pygame.display.set_caption("Survive That!")
+pygame.display.set_caption("Survive That! (proto)")
 
 BLACK = (0,0,0)
 GREY = (180,180,180)

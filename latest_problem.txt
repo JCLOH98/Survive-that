@@ -1,0 +1,5 @@
+Survive that
+1 is original
+2 is backup plan
+
+in Enemy System 1, there is still some problem with the enemy x-axis and y-axis movement

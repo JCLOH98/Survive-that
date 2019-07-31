@@ -5,7 +5,7 @@ from math import *
 import pygame,sys
 from pygame.locals import *
 
-screenwidth = 450
+screenwidth = 1000
 screenheight = 600
 setfps = 30
 
@@ -30,8 +30,8 @@ LEFT_CLICK = (1,0,0)
 RIGHT_CLICK = (0,0,1)
 
 #background
-thebackground = pygame.image.load("./SurviveThat_BG.png").convert_alpha()
-thebackgroundRect = Rect(0,0,900,1200)
+thebackground = pygame.transform.scale(pygame.image.load("./SurviveThat_BG.png").convert_alpha(),(screenwidth,screenheight))
+thebackgroundRect = Rect(0,0,screenwidth,screenheight)
 thebackgroundRect.center = (screenwidth/2, screenheight/2)
 
 #angle from +ve x-axis
@@ -138,24 +138,22 @@ class Enemy:
         self.theplayerrect.center = self.playerrect.center
     
     
-def background(camerax,cameray,MoveRect):
+def background(MoveRect):
     Display.fill(GREY)
-    thebackgroundRect.centerx += camerax
-    thebackgroundRect.centery += cameray
 
     #both the 50 is the player width, and player height
     #it is also a reference for the border
-    if thebackgroundRect.centerx > screenwidth + MoveRect.left - 50 :
-        thebackgroundRect.centerx = screenwidth + MoveRect.left - 50
+    if thebackgroundRect.centerx > screenwidth + MoveRect.left:
+        thebackgroundRect.centerx = screenwidth + MoveRect.left
 
-    if thebackgroundRect.centerx < 0 - MoveRect.left + 50:
-        thebackgroundRect.centerx = 0 - MoveRect.left + 50
+    if thebackgroundRect.centerx < 0 - MoveRect.left:
+        thebackgroundRect.centerx = 0 - MoveRect.left
 
-    if thebackgroundRect.centery > screenheight + MoveRect.top - 50:
-        thebackgroundRect.centery = screenheight + MoveRect.top - 50
+    if thebackgroundRect.centery > screenheight + MoveRect.top:
+        thebackgroundRect.centery = screenheight + MoveRect.top
 
-    if thebackgroundRect.centery < 0 - MoveRect.top + 50:
-        thebackgroundRect.centery = 0 - MoveRect.top + 50
+    if thebackgroundRect.centery < 0 - MoveRect.top:
+        thebackgroundRect.centery = 0 - MoveRect.top
 
     Display.blit(thebackground,thebackgroundRect)
 
@@ -173,12 +171,9 @@ def main():
     enemy.SetEnemyAmount(10) #amount of enemy
 
     #player movable area
-    MoveRect = Rect(0,0,150,150)
+    MoveRect = Rect(0,0,screenwidth,screenheight)
     MoveRect.center = (screenwidth/2,screenheight/2)    
     
-    #camera
-    camerax = 0
-    cameray = 0
 
     #the speed
     thespeed = 20
@@ -192,7 +187,7 @@ def main():
     enemyangle = 0
 
     while True:
-        background(camerax,cameray,MoveRect)
+        background(MoveRect)
         key = pygame.key.get_pressed()
 
         End = time.time()#end time
@@ -373,25 +368,18 @@ def main():
             if (player.PlayerRect().right >= MoveRect.right):
                 #print("out of right")
                 player.SetRectRight(MoveRect.right)
-                camerax = -5
                 
             if (player.PlayerRect().left <= MoveRect.left):
                 #print("out of left")
                 player.SetRectLeft(MoveRect.left)
-                camerax = +5
                 
             if (player.PlayerRect().top <= MoveRect.top):
                 #print("out of top")
                 player.SetRectTop(MoveRect.top)
-                cameray = +5
                 
             if (player.PlayerRect().bottom >= MoveRect.bottom):
                 #print("out of bottom")
                 player.SetRectBottom(MoveRect.bottom)
-                cameray = -5
-        else:
-            camerax = 0
-            cameray = 0
 
         #DRAW
         #draw player
@@ -400,7 +388,7 @@ def main():
         Display.blit(player.theplayersurf, player.theplayerrect)
 
         #draw move area
-        pygame.draw.rect(Display,RED,MoveRect,1)
+        pygame.draw.rect(Display,RED,MoveRect,3)
 
         #draw  x-axis
         pygame.draw.line(Display,WHITE,(0, player.GetRectCenter()[1]), (screenwidth, player.GetRectCenter()[1]), 2)
