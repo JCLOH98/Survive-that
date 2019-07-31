@@ -149,17 +149,27 @@ def background(camerax,cameray,MoveRect):
     #it is also a reference for the border
     if thebackgroundRect.centerx > screenwidth + MoveRect.left - 50 :
         thebackgroundRect.centerx = screenwidth + MoveRect.left - 50
+        Display.blit(thebackground,thebackgroundRect)
+        return True
 
     if thebackgroundRect.centerx < 0 - MoveRect.left + 50:
         thebackgroundRect.centerx = 0 - MoveRect.left + 50
+        Display.blit(thebackground,thebackgroundRect)
+        return True
 
     if thebackgroundRect.centery > screenheight + MoveRect.top - 50:
         thebackgroundRect.centery = screenheight + MoveRect.top - 50
+        Display.blit(thebackground,thebackgroundRect)
+        return True
 
     if thebackgroundRect.centery < 0 - MoveRect.top + 50:
         thebackgroundRect.centery = 0 - MoveRect.top + 50
+        Display.blit(thebackground,thebackgroundRect)
+        return True
 
     Display.blit(thebackground,thebackgroundRect)
+
+    return False
 
 def main():
     
@@ -194,7 +204,11 @@ def main():
     enemyangle = 0
 
     while True:
-        background(camerax,cameray,MoveRect)
+        #use background to determine the camerax and cameray, so that when it reaches border, enemy can catch up
+        if background(camerax,cameray,MoveRect):
+            camerax = 0
+            cameray = 0
+            
         key = pygame.key.get_pressed()
 
         End = time.time()#end time
@@ -310,38 +324,53 @@ def main():
             #A,S,T,C
             #1st quad
             if (enemy.enemyrectlist[i].centerx > player.GetRectCenter()[0] and enemy.enemyrectlist[i].centery < player.GetRectCenter()[1]):
-                enemy.enemyrectlist[i].centerx -= (enemyspeed - camerax) #-ve xspeed
-                enemy.enemyrectlist[i].centery += (enemyspeed + cameray) #+ve yspeed
+                enemy.enemyrectlist[i].centerx -= enemyspeed - camerax #-ve xspeed
+                enemy.enemyrectlist[i].centery += enemyspeed + cameray #+ve yspeed
             #2nd quad
             if (enemy.enemyrectlist[i].centerx < player.GetRectCenter()[0] and enemy.enemyrectlist[i].centery < player.GetRectCenter()[1]):
-                enemy.enemyrectlist[i].centerx += (enemyspeed + camerax) #+ve xspeed
-                enemy.enemyrectlist[i].centery += (enemyspeed + cameray) #+ve yspeed
+                enemy.enemyrectlist[i].centerx += enemyspeed + camerax #+ve xspeed
+                enemy.enemyrectlist[i].centery += enemyspeed + cameray #+ve yspeed
                 pass
             #3rd quad
             if (enemy.enemyrectlist[i].centerx < player.GetRectCenter()[0] and enemy.enemyrectlist[i].centery > player.GetRectCenter()[1]):
-                enemy.enemyrectlist[i].centerx += (enemyspeed + camerax) #+ve xspeed
-                enemy.enemyrectlist[i].centery -= (enemyspeed - cameray) #-ve yspeed
+                enemy.enemyrectlist[i].centerx += enemyspeed + camerax #+ve xspeed
+                enemy.enemyrectlist[i].centery -= enemyspeed - cameray#-ve yspeed
                 pass
             #4th quad
             if (enemy.enemyrectlist[i].centerx > player.GetRectCenter()[0] and enemy.enemyrectlist[i].centery > player.GetRectCenter()[1]):
-                enemy.enemyrectlist[i].centerx -= (enemyspeed - camerax) #-ve xspeed
-                enemy.enemyrectlist[i].centery -= (enemyspeed - cameray) #-ve yspeed
+                enemy.enemyrectlist[i].centerx -= enemyspeed - camerax #-ve xspeed
+                enemy.enemyrectlist[i].centery -= enemyspeed - cameray #-ve yspeed
                 pass
 
             #on x axis (got problem)
             if (enemy.enemyrectlist[i].centery ==  player.GetRectCenter()[1]):
+                #+ve x axis
                 if (enemy.enemyrectlist[i].centerx >  player.GetRectCenter()[0]):
-                    enemy.enemyrectlist[i].centerx -= (enemyspeed - camerax)
+                    enemy.enemyrectlist[i].centerx -= enemyspeed
+                    if cameray != 0:
+                        enemy.enemyrectlist[i].centery += enemyspeed + cameray
+                #-ve x axis
                 elif (enemy.enemyrectlist[i].centerx <  player.GetRectCenter()[0]):
-                    enemy.enemyrectlist[i].centerx += (enemyspeed + camerax)
+                    enemy.enemyrectlist[i].centerx += enemyspeed
+                    if cameray != 0:
+                        enemy.enemyrectlist[i].centery -= enemyspeed - cameray
 
             #on y axis (got problem)
             if (enemy.enemyrectlist[i].centerx ==  player.GetRectCenter()[0]):
+                #+ve y axis
                 if (enemy.enemyrectlist[i].centery >  player.GetRectCenter()[1]):
-                    enemy.enemyrectlist[i].centery -= (enemyspeed + cameray)
+                    enemy.enemyrectlist[i].centery -= enemyspeed - cameray
+                    if camerax != 0:
+                        enemy.enemyrectlist[i].centerx += enemyspeed + camerax
+
+                #-ve y axis
                 elif (enemy.enemyrectlist[i].centery <  player.GetRectCenter()[1]):
-                    enemy.enemyrectlist[i].centery += (enemyspeed + cameray)
-        
+                    enemy.enemyrectlist[i].centery += enemyspeed + cameray
+                    if camerax != 0:
+                        enemy.enemyrectlist[i].centerx -= enemyspeed - camerax
+
+                
+                    
         if (key[K_w]):
             player.MoveUp()
             

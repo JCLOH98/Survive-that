@@ -187,12 +187,12 @@ def main():
     player.InitPlayerRect()
 
     #bullet
-    bullet = Bullet(4) #player can shoot max 4 bullet
+    bullet = Bullet(10) #player can shoot max 4 bullet
     bullet.SetBulletRect(50,25)
 
     #enemy
     enemy = Enemy(enemywidth,enemyheight)#width, height
-    enemy.SetEnemyAmount(10) #amount of enemy
+    enemy.SetEnemyAmount(3) #amount of enemy
 
     #player movable area
     MoveRect = Rect(0,0,screenwidth,screenheight)
@@ -482,9 +482,9 @@ def main():
             #print("BulletRect.centerx: ",bulletrectlist[i].centerx)
             #print("BulletRect.centery: ",bulletrectlist[i].centery)
 
+        #bullet out of screen
         for i in range(len(bullet.BList)):
             if (bullet.BRectList[i].centerx >= screenwidth or bullet.BRectList[i].centerx < 0 or bullet.BRectList[i].centery > screenheight or bullet.BRectList[i].centery < 0):
-                #shoot = False
                 bullet.BList.remove(bullet.BList[i])
                 bullet.BRectList.remove(bullet.BRectList[i])
                 bullet.BAngle.remove(bullet.BAngle[i])
@@ -493,16 +493,62 @@ def main():
                 bullet.BYspeed.remove(bullet.BYspeed[i])
                 bullet.BCurrent -= 1
                 break
+        #print("Before: ",bullet.BRectList)
+
         #enemy
-        for i in range(len(enemy.enemysurfacelist)):                
-            pass
-        
         for i in range(len(enemy.enemyrectlist)):
             #pygame.draw.rect(Display,YELLOW,enemy.enemyrectlist[i])
             #pygame.draw.rect(Display,GREEN,enemy.enemysurfrectlist[i])
             Display.blit(enemy.enemysurfacelist[i],enemy.enemysurfrectlist[i])
             
-            pygame.draw.line(Display,GREEN,(enemy.enemyrectlist[i].center),(player.GetRectCenter()),5)
+            pygame.draw.line(Display,GREEN,(enemy.enemyrectlist[i].center),(player.GetRectCenter()),3)
+
+        #bullet hit enemy
+        outerbreak = False
+        for i in range(len(bullet.BList)):
+            for j in range(len(enemy.enemysurfacelist)):
+                bulletmask = pygame.mask.from_surface(bullet.BList[i])
+                enemymask = pygame.mask.from_surface(enemy.enemysurfacelist[j])
+                
+                if (bulletmask.overlap(enemymask,(bullet.BRectList[i].centerx - enemy.enemysurfrectlist[j].centerx, bullet.BRectList[i].centery - enemy.enemysurfrectlist[j].centery))):
+                    bullet.BList.remove(bullet.BList[i])
+                    bullet.BRectList.remove(bullet.BRectList[i])
+                    bullet.BAngle.remove(bullet.BAngle[i])
+                    bullet.BMousePos.remove(bullet.BMousePos[i])
+                    bullet.BXspeed.remove(bullet.BXspeed[i])
+                    bullet.BYspeed.remove(bullet.BYspeed[i])
+                    bullet.BCurrent -= 1
+
+                    enemy.enemysurfacelist.remove(enemy.enemysurfacelist[j])
+                    enemy.enemysurfrectlist.remove(enemy.enemysurfrectlist[j])
+                    enemy.enemyrectlist.remove(enemy.enemyrectlist[j])
+                    enemy.enemyanglelist.remove(enemy.enemyanglelist[j])
+                    outerbreak = True
+                    break
+            if (outerbreak == True):
+                break
+        
+        #outerbreak = False
+        #for i in range(len(bullet.BRectList)):
+            #for j in range(len(enemy.enemysurfrectlist)):
+                
+                #if (bullet.BRectList[i].colliderect(enemy.enemysurfrectlist[j])):
+                    #bullet.BList.remove(bullet.BList[i])
+                    #bullet.BRectList.remove(bullet.BRectList[i])
+                    #bullet.BAngle.remove(bullet.BAngle[i])
+                    #bullet.BMousePos.remove(bullet.BMousePos[i])
+                    #bullet.BXspeed.remove(bullet.BXspeed[i])
+                    #bullet.BYspeed.remove(bullet.BYspeed[i])
+                    #bullet.BCurrent -= 1
+
+                    #enemy.enemysurfacelist.remove(enemy.enemysurfacelist[j])
+                    #enemy.enemysurfrectlist.remove(enemy.enemysurfrectlist[j])
+                    #enemy.enemyrectlist.remove(enemy.enemyrectlist[j])
+                    #enemy.enemyanglelist.remove(enemy.enemyanglelist[j])
+                    #outerbreak = True
+                    #break
+            #if (outerbreak == True):
+                #break
             
         
         pygame.display.update()
