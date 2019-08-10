@@ -133,11 +133,6 @@ class Enemy:
 
     def SetEnemyAmount(self,number):
         self.amount = number
-
-    def SetSurf(self,Surf):
-        self.theplayersurf = Surf
-        self.theplayerrect = self.theplayersurf.get_rect()
-        self.theplayerrect.center = self.playerrect.center
     
     
 def background(camerax,cameray,MoveRect):

@@ -3,5 +3,6 @@ Survive that
 2 is backup plan
 
 Solved - in Enemy System 1, there is still some problem with the enemy x-axis and y-axis movement due to camerax and cameray
-Solved - in Survive That! (proto2), the collision between enemy and bullet is base of surface rect, instead of surface itself
+Solved - in Survive That (proto2), the collision between enemy and bullet is base of surface rect, instead of surface itself
 (for collision can use pygame.Mask)
+Solved Big Bug in Survive That (proto) [Video]
