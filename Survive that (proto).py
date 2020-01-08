@@ -17,10 +17,13 @@ BLACK = (0,0,0)
 GREY = (180,180,180)
 WHITE = (255,255,255)
 RED = (255,0,0)
+DARKGREEN = (0,150,35)
 GREEN = (0,255,0)
 BLUE = (0,0,255)
 YELLOW = (255,255,0)
 AQUA = (0,255,255)
+
+PLAYERLIFE = 100;
 
 #print(Display.get_size())
 #screenwidth, screenheight = Display.get_size()
@@ -63,11 +66,12 @@ SubFont = pygame.font.Font("./font/carbon bl.ttf",25)
 #player sprite
 class Player:
     
-    def __init__(self,x,y,width,height):
+    def __init__(self,x,y,width,height,life):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
+        self.life = life
 
     def InitPlayerRect(self):
         self.playersurf = pygame.Surface((self.width,self.height))
@@ -228,7 +232,7 @@ def main():
     Start = time.time()#start time
     
     #player
-    player = Player(0,0,playerwidth,playerheight)
+    player = Player(0,0,playerwidth,playerheight,PLAYERLIFE)
     player.InitPlayerRect()
     #player.SetRectCenter(screenwidth/2,screenheight/2)
 
@@ -640,10 +644,27 @@ def main():
             if (outerbreak == True):
                 break
 
+        #enemy hit player
+        for i in range(len(enemy.enemysurfacelist)):
+            enemymask = pygame.mask.from_surface(enemy.enemysurfacelist[i])
+            playermask = pygame.mask.from_surface(player.playersurf);
+            if (enemymask.overlap(playermask,(enemy.enemysurfrectlist[i].centerx - player.GetRectCenter()[0], enemy.enemysurfrectlist[i].centery - player.GetRectCenter()[1]))):
+                enemy.enemysurfacelist.remove(enemy.enemysurfacelist[i])
+                enemy.enemysurfrectlist.remove(enemy.enemysurfrectlist[i])
+                enemy.enemyrectlist.remove(enemy.enemyrectlist[i])
+                enemy.enemyanglelist.remove(enemy.enemyanglelist[i])
+                player.life -= 10
+                break
+
         #Display the player datas
-        TheBullet = MainFont.render("Bullet remains: " + str(bullet.BAmount - bullet.BCurrent),True,WHITE)
-        TheBulletRect = TheBullet.get_rect()
-        Display.blit(TheBullet,TheBulletRect)
+        #TheBullet = MainFont.render("Bullet remains: " + str(bullet.BAmount - bullet.BCurrent),True,WHITE)
+        #TheBulletRect = TheBullet.get_rect()
+        #Display.blit(TheBullet,TheBulletRect)
+        pygame.draw.rect(Display,DARKGREEN,(10,10,100,20))
+        if (player.life <= 0):
+            player.life = 0
+        pygame.draw.rect(Display,GREEN,(10,10,int(player.life/PLAYERLIFE*100),20))
+        pygame.draw.rect(Display,BLACK,(10,10,100,20),3)
         
             
         pygame.display.update()
