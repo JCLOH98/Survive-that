@@ -5,7 +5,7 @@ from math import *
 import pygame,sys
 from pygame.locals import *
 
-screenwidth = 450
+screenwidth = 600
 screenheight = 600
 setfps = 30
 
@@ -37,9 +37,11 @@ LEFT_CLICK = (1,0,0)
 RIGHT_CLICK = (0,0,1)
 
 #background
-thebackground = pygame.image.load("./SurviveThat_BG.png").convert_alpha()
-thebackgroundRect = Rect(0,0,900,1200)
-thebackgroundRect.center = (screenwidth/2, screenheight/2)
+#thebackground = pygame.image.load("./SurviveThat_BG.png").convert_alpha()
+thebackground = pygame.transform.scale(pygame.image.load("./SurviveThat_BG.png").convert_alpha(),(int(screenwidth*4),int(screenheight*4)))
+thebackgroundRect = Rect(0,0,int(screenwidth*4),int(screenheight*4))
+thebackgroundRect.center = (int(screenwidth/2), int(screenheight/2))
+borderref = 100
 
 #angle from +ve x-axis
 angle = 0
@@ -184,45 +186,46 @@ def background(camerax,cameray,MoveRect):
     thebackgroundRect.centerx += camerax
     thebackgroundRect.centery += cameray
 
+    #'''
     #both the 50 is a reference for the border
-    if thebackgroundRect.centerx > screenwidth + MoveRect.left - 50 :
-        thebackgroundRect.centerx = screenwidth + MoveRect.left - 50
-        #print("left border")
-        if thebackgroundRect.centery > screenheight + MoveRect.top - 50:
-            thebackgroundRect.centery = screenheight + MoveRect.top - 50
-            #print("upper")
-        elif thebackgroundRect.centery < 0 - MoveRect.top + 50:
-            thebackgroundRect.centery = 0 - MoveRect.top + 50
+    if thebackgroundRect.centerx > int(thebackgroundRect.width/2) + MoveRect.left - borderref :
+        thebackgroundRect.centerx = int(thebackgroundRect.width/2) + MoveRect.left - borderref
+        print("left border")
+        if thebackgroundRect.centery > int(thebackgroundRect.height/2) + MoveRect.top - borderref:
+            thebackgroundRect.centery = int(thebackgroundRect.height/2) + MoveRect.top - borderref
+            print("upper")
+        elif thebackgroundRect.centery < -int(thebackgroundRect.height/2) - MoveRect.top + borderref:
+            thebackgroundRect.centery = -int(thebackgroundRect.height/2) - MoveRect.top + borderref
             #print("bottom")
         
         Display.blit(thebackground,thebackgroundRect)
         return True
 
-    if thebackgroundRect.centerx < 0 - MoveRect.left + 50:
-        thebackgroundRect.centerx = 0 - MoveRect.left + 50
+    if thebackgroundRect.centerx <  -int(thebackgroundRect.width/2) - MoveRect.width + borderref:
+        thebackgroundRect.centerx =  -int(thebackgroundRect.width/2) - MoveRect.width + borderref
         #print("right border")
-        if thebackgroundRect.centery > screenheight + MoveRect.top - 50:
-            thebackgroundRect.centery = screenheight + MoveRect.top - 50
+        if thebackgroundRect.centery > int(thebackgroundRect.height/2) + MoveRect.top - borderref:
+            thebackgroundRect.centery = int(thebackgroundRect.height/2) + MoveRect.top - borderref
             #print("upper")
-        elif thebackgroundRect.centery < 0 - MoveRect.top + 50:
-            thebackgroundRect.centery = 0 - MoveRect.top + 50
+        elif thebackgroundRect.centery < -int(thebackgroundRect.height/2) - MoveRect.top + borderref:
+            thebackgroundRect.centery = -int(thebackgroundRect.height/2) - MoveRect.top + borderref
             #print("bottom")
         
         Display.blit(thebackground,thebackgroundRect)
         return True
 
-    if thebackgroundRect.centery > screenheight + MoveRect.top - 50:
-        thebackgroundRect.centery = screenheight + MoveRect.top - 50
+    if thebackgroundRect.centery > int(thebackgroundRect.height/2) + MoveRect.top - borderref:
+        thebackgroundRect.centery = int(thebackgroundRect.height/2) + MoveRect.top - borderref
         Display.blit(thebackground,thebackgroundRect)
-        #print("up border")
+        print("up border")
         return True
 
-    if thebackgroundRect.centery < 0 - MoveRect.top + 50:
-        thebackgroundRect.centery = 0 - MoveRect.top + 50
+    if thebackgroundRect.centery < -int(thebackgroundRect.height/2) - MoveRect.top + borderref:
+        thebackgroundRect.centery = -int(thebackgroundRect.height/2) - MoveRect.top + borderref
         Display.blit(thebackground,thebackgroundRect)
         #print("bot border")
         return True
-
+    #'''
     Display.blit(thebackground,thebackgroundRect)
     return False
 
@@ -276,7 +279,7 @@ def main():
                         TheTime += 1
                         Start = time.time()
                         #print(TheTime)
-                        if TheTime % 5 == 0: #every 5 seconds
+                        if TheTime % 10 == 0: #every 10 seconds
                             if (len(enemy.enemyrectlist) < enemy.amount): #if the enemy on screen is not the enemy.amount
                                 #print(len(enemy.enemylist))
                                 enemyspawnset = random.randint(1,2)
@@ -596,10 +599,10 @@ def main():
 
         #bullet hit background border
         for i in range(len(bullet.BList)):
-            if (bullet.BRectList[i].top < thebackgroundRect.top + 50 or
-                bullet.BRectList[i].bottom > thebackgroundRect.bottom - 50 or
-                bullet.BRectList[i].left < thebackgroundRect.left + 50 or
-                bullet.BRectList[i].right > thebackgroundRect.right - 50):
+            if (bullet.BRectList[i].top < thebackgroundRect.top + borderref or
+                bullet.BRectList[i].bottom > thebackgroundRect.bottom - borderref or
+                bullet.BRectList[i].left < thebackgroundRect.left + borderref or
+                bullet.BRectList[i].right > thebackgroundRect.right - borderref):
                 #shoot = False
                 bullet.BList.remove(bullet.BList[i])
                 bullet.BRectList.remove(bullet.BRectList[i])
